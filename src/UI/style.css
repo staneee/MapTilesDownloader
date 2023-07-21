@@ -8,7 +8,7 @@ html, body {
 
 #max-height {
 	height: 100%;
-	width: calc(100% - 302px);
+	width: calc(100% - 340px);
 	display: inline-block;
 	position: relative;
 }
