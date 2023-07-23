@@ -9,6 +9,7 @@
 
 	<!-- TODO replace jquery with react -->
 	<script src="jquery.min.js"></script>
+	<script src="libs\vue.global.3.3.4.js"></script>
 
 	<!-- map -->
 	<link rel="stylesheet"
@@ -19,19 +20,14 @@
 	<script src="leaflet.pm/leaflet-geoman.min.js?v=1"></script>
 
 
-	<script src='https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js'></script>
+	<script src='libs/progressbar.js'></script>
 
 	<script src="async.min.js"></script>
 	<script src="turf.min.js"></script>
 
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i"
 		rel="stylesheet">
-	<script src="materialize/js/materialize.min.js"></script>
-	<link href='materialize/css/materialize.min.css'
-		rel='stylesheet'
-		type='text/css' />
 
-	
 	<link href='fonts/fonts.css'
 		rel='stylesheet'
 		type='text/css' />
@@ -42,179 +38,146 @@
 
 <body>
 
-	<div id='max-height'>
+	<div id="app"
+		class="max-height">
 
-		<div id='map-view'></div>
+		<!-- 左边地图 -->
+		<div class="max-height">
+			<div id='map-view'></div>
+			<div id='main-title'>Map Tiles Downloader</div>
+		</div>
 
-		<div id='main-title'>Map Tiles Downloader</div>
+		<!-- 右边配置 -->
+		<div class='sidebar'
+			id='main-sidebar'>
+
+			<h3>Export Configure</h3>
+			<div>
+				<button @click="startDownloading()">Download</button>
+			</div>
+
+			<div style="overflow-y: scroll; overflow-x: hidden; height: 80vh;">
+				<!-- tile 服务器配置 -->
+				<div>
+					<h5>Tile Server</h5>
+				</div>
+				<div>
+					<select v-model="selectedTileServer"
+						class="max-width">
+						<option v-for="(value, key) in tileServerDict"
+							:value="value">{{key}}</option>
+					</select>
+				</div>
+				<div>
+					<input v-model="selectedTileServer"
+						class="max-width"
+						disabled>
+				</div>
+
+
+				<!-- 缩放配置： From -->
+				<div>
+					<h5>Zoom From</h5>
+				</div>
+				<div>
+					<select v-model="zoomFrom"
+						type="text"
+						class="max-width">
+						<option v-for="zoomIndex in zoomList"
+							:value="zoomIndex">{{zoomIndex}}</option>
+					</select>
+				</div>
+
+				<!-- 缩放配置： To -->
+				<div>
+					<h5>Zoom From</h5>
+				</div>
+				<div>
+					<select v-model="zoomTo"
+						type="text"
+						class="max-width">
+						<option v-for="zoomIndex in zoomList"
+							:value="zoomIndex">{{zoomIndex}}</option>
+					</select>
+				</div>
+
+				<!-- 输出缩放 -->
+				<div>
+					<h5>Out Scale</h5>
+				</div>
+				<div>
+					<select v-model="outputScale"
+						class="max-width">
+						<option value="1">1x</option>
+						<option value="2">2x</option>
+					</select>
+				</div>
+
+				<!-- 输出类型 -->
+				<div>
+					<h5>Out Type</h5>
+				</div>
+				<div>
+					<select v-model="outputType"
+						type="text"
+						class="max-width">
+						<option value="directory">Directory</option>
+						<option value="mbtiles">Mbtiles</option>
+						<option value="repo">Repo</option>
+					</select>
+				</div>
+
+
+				<!-- 输出格式 -->
+				<div>
+					<h5>Output File</h5>
+				</div>
+				<div>
+					<input v-model="outputFile"
+						type="text"
+						class="max-width"
+						disabled>
+				</div>
+
+
+				<!-- 并行线程 -->
+				<div>
+					<h5>Parallel Threads</h5>
+				</div>
+				<div>
+					<select v-model="parallelThreads"
+						type="text"
+						class="max-width">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="4">4</option>
+						<option value="6">6</option>
+						<option value="8">8</option>
+						<option value="16">16</option>
+						<option value="32">32</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
 
 	</div>
 
-	<div class='sidebar'
-		id='main-sidebar'>
-
-		<div class='step-number'>
-			1
-		</div>
-		<div class="step-title">
-			Select a Region
-		</div>
-
-		<div class='center-align sidebar-section'>
-			<p>
-				<a class="waves-effect waves-light z-depth-0 btn-small orange darken-3"
-					id='rectangle-draw-button'>Draw a rectangle</a>
-			</p>
-		</div>
-
-		<div class='step-number'>
-			2
-		</div>
-		<div class="step-title">
-			Configure
-		</div>
-
-		<div class='sidebar-section'>
-			<div class="row">
-				<div class="input-field col s6">
-					<input id="zoom-from-box"
-						type="text"
-						value='15' />
-					<label for="zoom-from-box"
-						class="active">Zoom from:</label>
-				</div>
-				<div class="input-field col s6">
-					<input id="zoom-to-box"
-						type="text"
-						value='15' />
-					<label for="zoom-to-box"
-						class="active">Zoom to:</label>
-				</div>
-			</div>
 
 
-			<div class="row">
-				<div class="input-field col s10">
-					<input id="source-box"
-						type="text"
-						value='https://tile.openstreetmap.org/{z}/{x}/{y}.png'>
-					<label for="source-box">Map Tile Source</label>
-				</div>
-				<div class="input-field col s2">
-					<a class='waves-effect waves-light btn-small blue-grey lighten-2 z-depth-0 dropdown-trigger'
-						id='source-select'
-						href='#'
-						data-target='sources'>⯆</a>
 
-					<ul id='sources'
-						class='dropdown-content'>
-					</ul>
-				</div>
-			</div>
+	<script>
+		function addScript(url) {
+			var script = document.createElement("script");
+			script.type = "text/javascript";
+			script.src = url + "?v=" + Date.now();
+			document.body.appendChild(script);
+		}
 
-			<div class='center-align'>
-				<a class="waves-effect waves-light z-depth-0 btn-small orange darken-3"
-					id='grid-preview-button'>Preview Grid</a>
-			</div>
 
-		</div>
-
-		<div class='step-number'>
-			3
-		</div>
-		<div class="step-title">
-			<a href='javascript:void(0)'
-				id='more-options-toggle'>More Options (+)</a>
-		</div>
-
-		<div style='display:none;'
-			id='more-options'
-			class='sidebar-section row'>
-
-			<div class="input-field col s12">
-				<select id="output-scale"
-					type="text">
-					<option value="1">1x</option>
-					<option value="2">2x</option>
-				</select>
-				<label for="output-scale">Output scale</label>
-			</div>
-
-			<div class="input-field col s12">
-				<input id="output-directory-box"
-					type="text"
-					value="{timestamp}">
-				<label for="output-directory-box">Output directory</label>
-			</div>
-
-			<div class="input-field col s12">
-				<select id="output-type"
-					type="text">
-					<option value="directory">Directory</option>
-					<option value="mbtiles">Mbtiles</option>
-					<option value="repo">Repo</option>
-				</select>
-				<label for="output-type">Output type</label>
-			</div>
-
-			<div class="input-field col s12">
-				<input id="output-file-box"
-					type="text"
-					value="{z}/{x}/{y}.png">
-				<label for="output-file-box">Output file</label>
-			</div>
-
-			<div class="input-field col s12">
-				<input id="parallel-threads-box"
-					type="text"
-					value="4">
-				<label for="parallel-threads-box">Parallel downloads</label>
-			</div>
-		</div>
-
-		<button class='waves-effect waves-light z-depth-0 btn-large cyan darken-2 bottom-button'
-			id='download-button'>Download</button>
-
-	</div>
-
-	<div class='sidebar'
-		id='download-sidebar'
-		style="display: none;">
-
-		<div class='step-number'>
-			5
-		</div>
-		<div class="step-title">
-			Downloading tiles
-		</div>
-		<div class="hints sidebar-section">
-			Please wait...
-		</div>
-
-		<div class="sidebar-section">
-			<div id='progress-radial'
-				class=''>
-
-			</div>
-
-			<p id='progress-subtitle'
-				class=''>
-
-			</p>
-
-			<p class='tile-strip '>
-			</p>
-
-		</div>
-
-		<textarea id='log-view'
-			class="sidebar-section"></textarea>
-
-		<button class='waves-effect waves-light z-depth-0 btn-large red lighten-5 bottom-button'
-			id='stop-button'>Stop</button>
-
-	</div>
-	<script src="main.js"></script>
+		addScript("/common.js")
+		addScript("/index.js")
+	</script>
 </body>
 
 </html>
