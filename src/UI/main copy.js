@@ -104,15 +104,15 @@ $(function() {
 			$("#more-options").toggle();
 		})
 
-		var outputFileBox = $("#output-file-box")
+		var outputFile = $("#output-file-box")
 		$("#output-type").change(function() {
 			var outputType = $("#output-type").val();
 			if(outputType == "mbtiles") {
-				outputFileBox.val("tiles.mbtiles")
+				outputFile.val("tiles.mbtiles")
 			} else if(outputType == "repo") {
-				outputFileBox.val("tiles.repo")
+				outputFile.val("tiles.repo")
 			} else if(outputType == "directory") {
-				outputFileBox.val("{z}/{x}/{y}.png")
+				outputFile.val("{z}/{x}/{y}.png")
 			}
 		})
 
