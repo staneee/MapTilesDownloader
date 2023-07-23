@@ -97,8 +97,11 @@ class serverHandler(BaseHTTPRequestHandler):
 
 			else:
 
-				tempFile = self.randomString() + ".png"
-				tempFilePath = os.path.join("temp", tempFile)
+				tempFile = str(y) + ".png"
+				tempFileDir = os.path.join("temp", str(z), str(x))
+				os.makedirs(tempFileDir, exist_ok=True)
+				tempFilePath = os.path.join(tempFileDir, tempFile)
+
 
 				result["code"] = Utils.downloadFileScaled(source, tempFilePath, x, y, z, outputScale)
 
@@ -224,12 +227,12 @@ class serverThreadedHandler(ThreadingMixIn, HTTPServer):
 
 def run():
 	print('Starting Server...')
-	server_address = ('', 8080)
+	server_address = ('', 8081)
 	httpd = serverThreadedHandler(server_address, serverHandler)
 	print('Running Server...')
 
 	# os.startfile('UI\\index.htm', 'open')
-	print("Open http://localhost:8080/ to view the application.")
+	print("Open http://localhost:8081/ to view the application.")
 
 	httpd.serve_forever()
  

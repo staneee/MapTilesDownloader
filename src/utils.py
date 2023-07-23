@@ -20,8 +20,16 @@ import glob
 import os
 import base64
 import math
+import requests
+import os
 
 from PIL import Image
+
+headers = {
+    'Referer': 'http://localhost:8081/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82',
+}
+
 
 class Utils:
 	
@@ -124,7 +132,15 @@ class Utils:
 		ssl._create_default_https_context = ssl._create_unverified_context
 
 		try:
-			path, response = urllib.request.urlretrieve(url, destination)
+			# path, response = urllib.request.urlretrieve(url, destination)
+			# 请求下载
+			response = requests.get(url,  headers=headers)
+			if response.status_code == 200:
+				# 写入
+				with open(destination, 'wb') as f:
+					f.write(response.content)
+			else:
+				print(response)
 			code = 200
 		except urllib.error.URLError as e:
 			if not hasattr(e, "code"):
