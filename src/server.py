@@ -227,12 +227,12 @@ class serverThreadedHandler(ThreadingMixIn, HTTPServer):
 
 def run():
 	print('Starting Server...')
-	server_address = ('', 8080)
+	server_address = ('', 8082)
 	httpd = serverThreadedHandler(server_address, serverHandler)
 	print('Running Server...')
 
 	# os.startfile('UI\\index.htm', 'open')
-	print("Open http://localhost:8080/ to view the application.")
+	print("Open http://localhost:8082/ to view the application.")
 
 	httpd.serve_forever()
  

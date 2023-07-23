@@ -39,6 +39,8 @@ createApp({
 			outputType: 'directory',
 			outputFile: '{z}/{x}/{y}.png',
 			parallelThreads: 4,
+			requests: [],
+			cancellationToken: false
 		}
 	},
 	mounted() {
@@ -194,8 +196,26 @@ createApp({
 				updateProgress(allTiles.length, allTiles.length);
 				logItemRaw("All requests are done");
 
-				$("#stop-button").html("FINISH");
+				// $("#stop-button").html("FINISH");
 			});
+		},
+		/** 停止 */
+		stopDownloading() {
+			this.cancellationToken = true;
+
+			for (var i = 0; i < this.requests.length; i++) {
+				var request = this.requests[i];
+				try {
+					request.abort();
+				} catch (e) {
+
+				}
+			}
+
+			// $("#main-sidebar").show();
+			// $("#download-sidebar").hide();
+			// removeGrid();
+			// clearLogs();
 		},
 		/**  */
 		getGrid(zoomLevel) {
