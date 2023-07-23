@@ -130,18 +130,14 @@ class Utils:
 		# monkey patching SSL certificate issue
 		# DONT use it in a prod/sensitive environment
 		ssl._create_default_https_context = ssl._create_unverified_context
-		print(url + "  " + destination)
+
 		try:
 			# path, response = urllib.request.urlretrieve(url, destination)
-			# 创建文件夹
-			folder_path = 'tmp/'+str(z)+'/'+str(x)
-			os.makedirs(folder_path, exist_ok=True)
-
 			# 请求下载
 			response = requests.get(url,  headers=headers)
 			if response.status_code == 200:
 				# 写入
-				with open(folder_path+'/'+str(y)+'.png','wb') as f:
+				with open(destination, 'wb') as f:
 					f.write(response.content)
 			else:
 				print(response)
