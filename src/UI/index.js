@@ -52,7 +52,7 @@ createApp({
 	methods: {
 		/** 下载 */
 		async startDownloading() {
-			const { getBounds, getMinZoom, getMaxZoom, getAllGridTiles, generateQuadKey } = this;
+			const { getBounds, getMinZoom, getMaxZoom, getAllGridTiles, generateQuadKey, requests } = this;
 
 			const bounds = getBounds();
 			if (!bounds) {
