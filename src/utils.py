@@ -21,11 +21,12 @@ import os
 import base64
 import math
 import requests
+import os
 
 from PIL import Image
 
 headers = {
-    'Referer': 'http://localhost:8080/',
+    'Referer': 'http://localhost:8081/',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82',
 }
 
@@ -132,11 +133,15 @@ class Utils:
 		print(url + "  " + destination)
 		try:
 			# path, response = urllib.request.urlretrieve(url, destination)
+			# 创建文件夹
+			folder_path = 'tmp/'+str(z)+'/'+str(x)
+			os.makedirs(folder_path, exist_ok=True)
+
+			# 请求下载
 			response = requests.get(url,  headers=headers)
 			if response.status_code == 200:
-				# TODO: 持久化需要调整，对应的路径
-				# with open(str(z)+'_'+str(x)+'_'+str(y)+'.png','wb') as f:
-				with open('tmp/'+str(z)+'/'+str(x)+'/'+str(y)+'.png','wb') as f:
+				# 写入
+				with open(folder_path+'/'+str(y)+'.png','wb') as f:
 					f.write(response.content)
 			else:
 				print(response)
