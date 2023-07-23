@@ -11,10 +11,10 @@ $(function() {
 	var requests = [];
 
 	var sources = {
+		"Open Street Maps": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+		"Open Cycle Maps": "http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+		"Open PT Transport": "http://openptmap.org/tiles/{z}/{x}/{y}.png",
 
-		"Bing Maps": "http://ecn.t0.tiles.virtualearth.net/tiles/r{quad}.jpeg?g=129&mkt=en&stl=H",
-		"Bing Maps Satellite": "http://ecn.t0.tiles.virtualearth.net/tiles/a{quad}.jpeg?g=129&mkt=en&stl=H",
-		"Bing Maps Hybrid": "http://ecn.t0.tiles.virtualearth.net/tiles/h{quad}.jpeg?g=129&mkt=en&stl=H",
 
 		"div-1B": "",
 
@@ -25,9 +25,9 @@ $(function() {
 
 		"div-2": "",
 
-		"Open Street Maps": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-		"Open Cycle Maps": "http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-		"Open PT Transport": "http://openptmap.org/tiles/{z}/{x}/{y}.png",
+		"Bing Maps": "http://ecn.t0.tiles.virtualearth.net/tiles/r{quad}.jpeg?g=129&mkt=en&stl=H",
+		"Bing Maps Satellite": "http://ecn.t0.tiles.virtualearth.net/tiles/a{quad}.jpeg?g=129&mkt=en&stl=H",
+		"Bing Maps Hybrid": "http://ecn.t0.tiles.virtualearth.net/tiles/h{quad}.jpeg?g=129&mkt=en&stl=H",
 
 		"div-3": "",
 
@@ -44,7 +44,7 @@ $(function() {
 
 	function initializeMap() {
 
-		mapboxgl.accessToken = 'pk.eyJ1IjoiYWxpYXNocmFmIiwiYSI6ImNqdXl5MHV5YTAzNXI0NG51OWFuMGp4enQifQ.zpd2gZFwBTRqiapp1yci9g';
+		mapboxgl.accessToken = 'pk.eyJ1IjoibXNtYWRhb2UiLCJhIjoiY2xrZjMzdGZ3MWI5NjNocXQzMDIxandmNiJ9.GzfcEiup-ZhAZ15cu6s5yQ';
 
 		map = new mapboxgl.Map({
 			container: 'map-view',
@@ -469,6 +469,7 @@ $(function() {
 		data.append('bounds', boundsArray.join(","))
 		data.append('center', centerArray.join(","))
 
+		debugger
 		var request = await $.ajax({
 			url: "/start-download",
 			async: true,
@@ -505,54 +506,56 @@ $(function() {
 			data.append('bounds', boundsArray.join(","))
 			data.append('center', centerArray.join(","))
 
-			var request = $.ajax({
-				"url": url,
-				async: true,
-				timeout: 30 * 1000,
-				type: "post",
-			    contentType: false,
-			    processData: false,
-				data: data,
-				dataType: 'json',
-			}).done(function(data) {
+			debugger
+			// var request = $.ajax({
+			// 	"url": url,
+			// 	async: true,
+			// 	timeout: 30 * 1000,
+			// 	type: "post",
+			//     contentType: false,
+			//     processData: false,
+			// 	data: data,
+			// 	dataType: 'json',
+			// }).done(function(data) {
 
-				if(cancellationToken) {
-					return;
-				}
+			// 	if(cancellationToken) {
+			// 		return;
+			// 	}
 
-				if(data.code == 200) {
-					showTinyTile(data.image)
-					logItem(item.x, item.y, item.z, data.message);
-				} else {
-					logItem(item.x, item.y, item.z, data.code + " Error downloading tile");
-				}
+			// 	if(data.code == 200) {
+			// 		showTinyTile(data.image)
+			// 		logItem(item.x, item.y, item.z, data.message);
+			// 	} else {
+			// 		logItem(item.x, item.y, item.z, data.code + " Error downloading tile");
+			// 	}
 
-			}).fail(function(data, textStatus, errorThrown) {
+			// }).fail(function(data, textStatus, errorThrown) {
 
-				if(cancellationToken) {
-					return;
-				}
+			// 	if(cancellationToken) {
+			// 		return;
+			// 	}
 
-				logItem(item.x, item.y, item.z, "Error while relaying tile");
-				//allTiles.push(item);
+			// 	logItem(item.x, item.y, item.z, "Error while relaying tile");
+			// 	//allTiles.push(item);
 
-			}).always(function(data) {
-				i++;
+			// }).always(function(data) {
+			// 	i++;
 
-				removeLayer(boxLayer);
-				updateProgress(i, allTiles.length);
+			// 	removeLayer(boxLayer);
+			// 	updateProgress(i, allTiles.length);
 
-				done();
+			// 	done();
 				
-				if(cancellationToken) {
-					return;
-				}
-			});
+			// 	if(cancellationToken) {
+			// 		return;
+			// 	}
+			// });
 
 			requests.push(request);
 
 		}, async function(err) {
 
+			debugger
 			var request = await $.ajax({
 				url: "/end-download",
 				async: true,
