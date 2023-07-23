@@ -99,7 +99,7 @@ class serverHandler(BaseHTTPRequestHandler):
 
 				tempFile = self.randomString() + ".png"
 				tempFilePath = os.path.join("temp", tempFile)
-
+	
 				result["code"] = Utils.downloadFileScaled(source, tempFilePath, x, y, z, outputScale)
 
 				print("HIT: " + source + "\n" + "RETURN: " + str(result["code"]))

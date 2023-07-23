@@ -20,8 +20,15 @@ import glob
 import os
 import base64
 import math
+import requests
 
 from PIL import Image
+
+headers = {
+    'Referer': 'http://localhost:8080/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82',
+}
+
 
 class Utils:
 	
@@ -122,9 +129,17 @@ class Utils:
 		# monkey patching SSL certificate issue
 		# DONT use it in a prod/sensitive environment
 		ssl._create_default_https_context = ssl._create_unverified_context
-
+		print(url + "  " + destination)
 		try:
-			path, response = urllib.request.urlretrieve(url, destination)
+			# path, response = urllib.request.urlretrieve(url, destination)
+			response = requests.get(url,  headers=headers)
+			if response.status_code == 200:
+				# TODO: 持久化需要调整，对应的路径
+				# with open(str(z)+'_'+str(x)+'_'+str(y)+'.png','wb') as f:
+				with open('tmp/'+str(z)+'/'+str(x)+'/'+str(y)+'.png','wb') as f:
+					f.write(response.content)
+			else:
+				print(response)
 			code = 200
 		except urllib.error.URLError as e:
 			if not hasattr(e, "code"):

@@ -1,6 +1,6 @@
 var mapView;
 
-$(function() {
+$(function () {
 
 	var map = null;
 	var draw = null;
@@ -49,9 +49,10 @@ $(function() {
 		map = new mapboxgl.Map({
 			container: 'map-view',
 			style: 'mapbox://styles/aliashraf/ck6lw9nr80lvo1ipj8zovttdx',
-			center: [-73.983652, 40.755024], 
-			zoom: 12
+			center: [121, 31],
+			zoom: 13
 		});
+
 
 		geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
 		var control = map.addControl(geocoder);
@@ -68,10 +69,10 @@ $(function() {
 
 		var dropdown = $("#sources");
 
-		for(var key in sources) {
+		for (var key in sources) {
 			var url = sources[key];
 
-			if(url == "") {
+			if (url == "") {
 				dropdown.append("<hr/>");
 				continue;
 			}
@@ -80,7 +81,7 @@ $(function() {
 			item.attr("data-url", url);
 			item.find("a").text(key);
 
-			item.click(function() {
+			item.click(function () {
 				var url = $(this).attr("data-url");
 				$("#source-box").val(url);
 			})
@@ -90,7 +91,7 @@ $(function() {
 	}
 
 	function initializeSearch() {
-		$("#search-form").submit(function(e) {
+		$("#search-form").submit(function (e) {
 			var location = $("#location-box").val();
 			geocoder.query(location);
 
@@ -100,18 +101,18 @@ $(function() {
 
 	function initializeMoreOptions() {
 
-		$("#more-options-toggle").click(function() {
+		$("#more-options-toggle").click(function () {
 			$("#more-options").toggle();
 		})
 
 		var outputFileBox = $("#output-file-box")
-		$("#output-type").change(function() {
+		$("#output-type").change(function () {
 			var outputType = $("#output-type").val();
-			if(outputType == "mbtiles") {
+			if (outputType == "mbtiles") {
 				outputFileBox.val("tiles.mbtiles")
-			} else if(outputType == "repo") {
+			} else if (outputType == "repo") {
 				outputFileBox.val("tiles.repo")
-			} else if(outputType == "directory") {
+			} else if (outputType == "directory") {
 				outputFileBox.val("{z}/{x}/{y}.png")
 			}
 		})
@@ -119,7 +120,7 @@ $(function() {
 	}
 
 	function initializeRectangleTool() {
-		
+
 		var modes = MapboxDraw.modes;
 		modes.draw_rectangle = DrawRectangle.default;
 
@@ -132,7 +133,7 @@ $(function() {
 			M.Toast.dismissAll();
 		});
 
-		$("#rectangle-draw-button").click(function() {
+		$("#rectangle-draw-button").click(function () {
 			startDrawing();
 		})
 
@@ -144,7 +145,7 @@ $(function() {
 		draw.changeMode('draw_rectangle');
 
 		M.Toast.dismissAll();
-		M.toast({html: 'Click two points on the map to make a rectangle.', displayLength: 7000})
+		M.toast({ html: 'Click two points on the map to make a rectangle.', displayLength: 7000 })
 	}
 
 	function initializeGridPreview() {
@@ -155,7 +156,7 @@ $(function() {
 
 	function showTilePopup(e) {
 
-		if(!e.originalEvent.ctrlKey) {
+		if (!e.originalEvent.ctrlKey) {
 			return;
 		}
 
@@ -167,30 +168,30 @@ $(function() {
 		var content = "X, Y, Z<br/><b>" + x + ", " + y + ", " + maxZoom + "</b><hr/>";
 		content += "Lat, Lng<br/><b>" + e.lngLat.lat + ", " + e.lngLat.lng + "</b>";
 
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(content)
-            .addTo(map);
+		new mapboxgl.Popup()
+			.setLngLat(e.lngLat)
+			.setHTML(content)
+			.addTo(map);
 
-        console.log(e.lngLat)
+		console.log(e.lngLat)
 
 	}
 
-	function long2tile(lon,zoom) {
-		return (Math.floor((lon+180)/360*Math.pow(2,zoom)));
+	function long2tile(lon, zoom) {
+		return (Math.floor((lon + 180) / 360 * Math.pow(2, zoom)));
 	}
 
-	function lat2tile(lat,zoom)  {
-		return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom)));
+	function lat2tile(lat, zoom) {
+		return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)));
 	}
 
-	function tile2long(x,z) {
-		return (x/Math.pow(2,z)*360-180);
+	function tile2long(x, z) {
+		return (x / Math.pow(2, z) * 360 - 180);
 	}
 
-	function tile2lat(y,z) {
-		var n=Math.PI-2*Math.PI*y/Math.pow(2,z);
-		return (180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))));
+	function tile2lat(y, z) {
+		var n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
+		return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
 	}
 
 	function getTileRect(x, y, zoom) {
@@ -212,11 +213,11 @@ $(function() {
 	function getArrayByBounds(bounds) {
 
 		var tileArray = [
-			[ bounds.getSouthWest().lng, bounds.getNorthEast().lat ],
-			[ bounds.getNorthEast().lng, bounds.getNorthEast().lat ],
-			[ bounds.getNorthEast().lng, bounds.getSouthWest().lat ],
-			[ bounds.getSouthWest().lng, bounds.getSouthWest().lat ],
-			[ bounds.getSouthWest().lng, bounds.getNorthEast().lat ],
+			[bounds.getSouthWest().lng, bounds.getNorthEast().lat],
+			[bounds.getNorthEast().lng, bounds.getNorthEast().lat],
+			[bounds.getNorthEast().lng, bounds.getSouthWest().lat],
+			[bounds.getSouthWest().lng, bounds.getSouthWest().lat],
+			[bounds.getSouthWest().lng, bounds.getNorthEast().lat],
 		];
 
 		return tileArray;
@@ -237,7 +238,7 @@ $(function() {
 
 		var areaPolygon = draw.getAll().features[0];
 
-		if(turf.booleanDisjoint(polygon, areaPolygon) == false) {
+		if (turf.booleanDisjoint(polygon, areaPolygon) == false) {
 			return true;
 		}
 
@@ -248,7 +249,7 @@ $(function() {
 
 		var coordinates = draw.getAll().features[0].geometry.coordinates[0];
 
-		var bounds = coordinates.reduce(function(bounds, coord) {
+		var bounds = coordinates.reduce(function (bounds, coord) {
 			return bounds.extend(coord);
 		}, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
 
@@ -265,17 +266,17 @@ $(function() {
 		//var thisZoom = zoomLevel - (outputScale-1)
 		var thisZoom = zoomLevel
 
-		var TY    = lat2tile(bounds.getNorthEast().lat, thisZoom);
-		var LX   = long2tile(bounds.getSouthWest().lng, thisZoom);
+		var TY = lat2tile(bounds.getNorthEast().lat, thisZoom);
+		var LX = long2tile(bounds.getSouthWest().lng, thisZoom);
 		var BY = lat2tile(bounds.getSouthWest().lat, thisZoom);
-		var RX  = long2tile(bounds.getNorthEast().lng, thisZoom);
+		var RX = long2tile(bounds.getNorthEast().lng, thisZoom);
 
-		for(var y = TY; y <= BY; y++) {
-			for(var x = LX; x <= RX; x++) {
+		for (var y = TY; y <= BY; y++) {
+			for (var x = LX; x <= RX; x++) {
 
 				var rect = getTileRect(x, y, thisZoom);
 
-				if(isTileInSelection(rect)) {
+				if (isTileInSelection(rect)) {
 					rects.push({
 						x: x,
 						y: y,
@@ -293,7 +294,7 @@ $(function() {
 	function getAllGridTiles() {
 		var allTiles = [];
 
-		for(var z = getMinZoom(); z <= getMaxZoom(); z++) {
+		for (var z = getMinZoom(); z <= getMaxZoom(); z++) {
 			var grid = getGrid(z);
 			// TODO shuffle grid via a heuristic (hamlet curve? :/)
 			allTiles = allTiles.concat(grid);
@@ -313,7 +314,7 @@ $(function() {
 
 		var pointsCollection = []
 
-		for(var i in grid) {
+		for (var i in grid) {
 			var feature = grid[i];
 			var array = getArrayByBounds(feature.rect);
 			pointsCollection.push(array);
@@ -336,7 +337,7 @@ $(function() {
 		});
 
 		var totalTiles = getAllGridTiles().length;
-		M.toast({html: 'Total ' + totalTiles.toLocaleString() + ' tiles in the region.', displayLength: 5000})
+		M.toast({ html: 'Total ' + totalTiles.toLocaleString() + ' tiles in the region.', displayLength: 5000 })
 
 	}
 
@@ -364,27 +365,27 @@ $(function() {
 	}
 
 	function removeLayer(id) {
-		if(map.getSource(id) != null) {
+		if (map.getSource(id) != null) {
 			map.removeLayer(id);
 			map.removeSource(id);
 		}
 	}
 
 	function generateQuadKey(x, y, z) {
-	    var quadKey = [];
-	    for (var i = z; i > 0; i--) {
-	        var digit = '0';
-	        var mask = 1 << (i - 1);
-	        if ((x & mask) != 0) {
-	            digit++;
-	        }
-	        if ((y & mask) != 0) {
-	            digit++;
-	            digit++;
-	        }
-	        quadKey.push(digit);
-	    }
-	    return quadKey.join('');
+		var quadKey = [];
+		for (var i = z; i > 0; i--) {
+			var digit = '0';
+			var mask = 1 << (i - 1);
+			if ((x & mask) != 0) {
+				digit++;
+			}
+			if ((y & mask) != 0) {
+				digit++;
+				digit++;
+			}
+			quadKey.push(digit);
+		}
+		return quadKey.join('');
 	}
 
 	function initializeDownloader() {
@@ -395,10 +396,10 @@ $(function() {
 			duration: 200,
 			trailColor: '#eee',
 			trailWidth: 1,
-			from: {color: '#0fb9b1', a:0},
-			to: {color: '#20bf6b', a:1},
+			from: { color: '#0fb9b1', a: 0 },
+			to: { color: '#20bf6b', a: 1 },
 			svgStyle: null,
-			step: function(state, circle) {
+			step: function (state, circle) {
 				circle.path.setAttribute('stroke', state.color);
 			}
 		});
@@ -413,7 +414,7 @@ $(function() {
 	function showTinyTile(base64) {
 		var currentImages = $(".tile-strip img");
 
-		for(var i = 4; i < currentImages.length; i++) {
+		for (var i = 4; i < currentImages.length; i++) {
 			$(currentImages[i]).remove();
 		}
 
@@ -425,12 +426,12 @@ $(function() {
 
 	async function startDownloading() {
 
-		if(draw.getAll().features.length == 0) {
-			M.toast({html: 'You need to select a region first.', displayLength: 3000})
+		if (draw.getAll().features.length == 0) {
+			M.toast({ html: 'You need to select a region first.', displayLength: 3000 })
 			return;
 		}
 
-		cancellationToken = false; 
+		cancellationToken = false;
 		requests = [];
 
 		$("#main-sidebar").hide();
@@ -456,7 +457,7 @@ $(function() {
 		var bounds = getBounds();
 		var boundsArray = [bounds.getSouthWest().lng, bounds.getSouthWest().lat, bounds.getNorthEast().lng, bounds.getNorthEast().lat]
 		var centerArray = [bounds.getCenter().lng, bounds.getCenter().lat, getMaxZoom()]
-		
+
 		var data = new FormData();
 		data.append('minZoom', getMinZoom())
 		data.append('maxZoom', getMaxZoom())
@@ -482,9 +483,9 @@ $(function() {
 		})
 
 		let i = 0;
-		var iterator = async.eachLimit(allTiles, numThreads, function(item, done) {
+		var iterator = async.eachLimit(allTiles, numThreads, function (item, done) {
 
-			if(cancellationToken) {
+			if (cancellationToken) {
 				return;
 			}
 
@@ -506,56 +507,54 @@ $(function() {
 			data.append('bounds', boundsArray.join(","))
 			data.append('center', centerArray.join(","))
 
-			debugger
-			// var request = $.ajax({
-			// 	"url": url,
-			// 	async: true,
-			// 	timeout: 30 * 1000,
-			// 	type: "post",
-			//     contentType: false,
-			//     processData: false,
-			// 	data: data,
-			// 	dataType: 'json',
-			// }).done(function(data) {
+			var request = $.ajax({
+				"url": url,
+				async: true,
+				timeout: 30 * 1000,
+				type: "post",
+				contentType: false,
+				processData: false,
+				data: data,
+				dataType: 'json',
+			}).done(function (data) {
 
-			// 	if(cancellationToken) {
-			// 		return;
-			// 	}
+				if (cancellationToken) {
+					return;
+				}
 
-			// 	if(data.code == 200) {
-			// 		showTinyTile(data.image)
-			// 		logItem(item.x, item.y, item.z, data.message);
-			// 	} else {
-			// 		logItem(item.x, item.y, item.z, data.code + " Error downloading tile");
-			// 	}
+				if (data.code == 200) {
+					showTinyTile(data.image)
+					logItem(item.x, item.y, item.z, data.message);
+				} else {
+					logItem(item.x, item.y, item.z, data.code + " Error downloading tile");
+				}
 
-			// }).fail(function(data, textStatus, errorThrown) {
+			}).fail(function (data, textStatus, errorThrown) {
 
-			// 	if(cancellationToken) {
-			// 		return;
-			// 	}
+				if (cancellationToken) {
+					return;
+				}
 
-			// 	logItem(item.x, item.y, item.z, "Error while relaying tile");
-			// 	//allTiles.push(item);
+				logItem(item.x, item.y, item.z, "Error while relaying tile");
+				//allTiles.push(item);
 
-			// }).always(function(data) {
-			// 	i++;
+			}).always(function (data) {
+				i++;
 
-			// 	removeLayer(boxLayer);
-			// 	updateProgress(i, allTiles.length);
+				removeLayer(boxLayer);
+				updateProgress(i, allTiles.length);
 
-			// 	done();
-				
-			// 	if(cancellationToken) {
-			// 		return;
-			// 	}
-			// });
+				done();
+
+				if (cancellationToken) {
+					return;
+				}
+			});
 
 			requests.push(request);
 
-		}, async function(err) {
+		}, async function (err) {
 
-			debugger
 			var request = await $.ajax({
 				url: "/end-download",
 				async: true,
@@ -604,11 +603,11 @@ $(function() {
 	function stopDownloading() {
 		cancellationToken = true;
 
-		for(var i =0 ; i < requests.length; i++) {
+		for (var i = 0; i < requests.length; i++) {
 			var request = requests[i];
 			try {
 				request.abort();
-			} catch(e) {
+			} catch (e) {
 
 			}
 		}
